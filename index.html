@@ -203,6 +203,13 @@
         }
     </style>
 </head>
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function () {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+</script>
+
 <body>
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 w-full bg-opacity-90 bg-gray-900 backdrop-filter backdrop-blur-lg z-50 shadow-lg">

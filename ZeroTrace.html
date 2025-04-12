@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroTrace | Cybersecurity CTF Community</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00ffe5;
+            --neon-purple: #9d00ff;
+            --dark-bg: #0c0c14;
+            --darker-bg: #070711;
+            --card-bg: #14141f;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .cyber-border {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 229, 0.2);
+        }
+        
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: cyber-border-anim 3s linear infinite;
+        }
+        
+        @keyframes cyber-border-anim {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        .glitch-bg {
+            position: relative;
+            background-color: var(--darker-bg);
+            overflow: hidden;
+        }
+        
+        .glitch-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(157, 0, 255, 0.1), transparent 70%);
+            z-index: 0;
+        }
+        
+        .glitch-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239d00ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        .neon-text {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+        }
+        
+        .neon-text-purple {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--neon-purple), 0 0 20px var(--neon-purple);
+        }
+        
+        .btn-cyber {
+            position: relative;
+            background-color: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-cyber:hover {
+            color: black;
+            border-color: var(--neon-cyan);
+        }
+        
+        .btn-cyber::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-cyan);
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-cyber:hover::before {
+            left: 0;
+        }
+        
+        .btn-cyber-alt {
+            position: relative;
+            background-color: transparent;
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-cyber-alt:hover {
+            color: white;
+            border-color: var(--neon-purple);
+        }
+        
+        .btn-cyber-alt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-purple);
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-cyber-alt:hover::before {
+            left: 0;
+        }
+        
+        .card-cyber {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 255, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .card-cyber:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 229, 0.1);
+            border-color: var(--neon-cyan);
+        }
+        
+        .card-cyber-alt {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(157, 0, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .card-cyber-alt:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.1);
+            border-color: var(--neon-purple);
+        }
+        
+        /* Matrix rain effect */
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        #matrix-canvas {
+            opacity: 0.1;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-purple);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full bg-opacity-90 bg-gray-900 backdrop-filter backdrop-blur-lg z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-white">
+                        <span class="neon-text">Zero</span><span class="neon-text-purple">Trace</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition duration-300">About</a>
+                    <a href="#ctf" class="text-gray-300 hover:text-cyan-400 transition duration-300">CTF Events</a>
+                    <a href="#community" class="text-gray-300 hover:text-cyan-400 transition duration-300">Community</a>
+                    <a href="#team" class="text-gray-300 hover:text-cyan-400 transition duration-300">Team</a>
+                    <a href="#hall-of-fame" class="text-gray-300 hover:text-cyan-400 transition duration-300">Hall of Fame</a>
+                    <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition duration-300">Contact</a>
+                </div>
+                
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-2">
+                <div class="flex flex-col space-y-3">
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition duration-300">About</a>
+                    <a href="#ctf" class="text-gray-300 hover:text-cyan-400 transition duration-300">CTF Events</a>
+                    <a href="#community" class="text-gray-300 hover:text-cyan-400 transition duration-300">Community</a>
+                    <a href="#team" class="text-gray-300 hover:text-cyan-400 transition duration-300">Team</a>
+                    <a href="#hall-of-fame" class="text-gray-300 hover:text-cyan-400 transition duration-300">Hall of Fame</a>
+                    <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition duration-300">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="glitch-bg relative h-screen flex items-center" id="home">
+        <div class="matrix-bg">
+            <canvas id="matrix-canvas"></canvas>
+        </div>
+        <div class="container mx-auto px-4 z-10">
+            <div class="text-center">
+                <div class="mb-6">
+                    <svg class="mx-auto w-24 h-24" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#00ffe5" stroke-width="2" />
+                        <path d="M50 20 L50 80 M20 50 L80 50" stroke="#9d00ff" stroke-width="4" />
+                        <path d="M30 30 L70 70 M30 70 L70 30" stroke="#00ffe5" stroke-width="2" />
+                        <circle cx="50" cy="50" r="15" fill="none" stroke="#9d00ff" stroke-width="3" />
+                    </svg>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                    <span class="neon-text">Zero</span><span class="neon-text-purple">Trace</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300">Hacking Minds. Solving Challenges. Building Together.</p>
+                <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
+                    <a href="#ctf" class="btn-cyber px-8 py-3 rounded-md text-lg font-semibold">Participate in the CTF</a>
+                    <a href="#community" class="btn-cyber-alt px-8 py-3 rounded-md text-lg font-semibold">Join the Community</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-16 glitch-bg relative" id="about">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">About <span class="neon-text">Zero</span><span class="neon-text-purple">Trace</span></h2>
+                <div class="w-20 h-1 bg-cyan-400 mx-auto"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto text-gray-300">
+                <p class="text-lg mb-6">
+                    ZeroTrace is a cybersecurity community focused on competitive hacking, knowledge sharing, and skills development through Capture The Flag (CTF) competitions. Our members range from beginners curious about cybersecurity to experienced professionals looking to sharpen their skills.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="card-cyber p-6 rounded-lg">
+                        <div class="text-cyan-400 text-4xl mb-4">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">CTF Focus Areas</h3>
+                        <ul class="text-gray-400">
+                            <li class="mb-2">• Web Exploitation</li>
+                            <li class="mb-2">• Reverse Engineering</li>
+                            <li class="mb-2">• Binary Exploitation (Pwn)</li>
+                            <li class="mb-2">• Cryptography</li>
+                            <li>• Forensics</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-cyber-alt p-6 rounded-lg">
+                        <div class="text-purple-400 text-4xl mb-4">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Our Community</h3>
+                        <ul class="text-gray-400">
+                            <li class="mb-2">• Inclusive & Supportive</li>
+                            <li class="mb-2">• Knowledge Sharing</li>
+                            <li class="mb-2">• Regular Events</li>
+                            <li class="mb-2">• Mentorship Programs</li>
+                            <li>• Global Network</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-cyber p-6 rounded-lg">
+                        <div class="text-cyan-400 text-4xl mb-4">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Our Mission</h3>
+                        <p class="text-gray-400">
+                            To build a collaborative environment where cybersecurity enthusiasts can learn, compete, and grow their skills while forming connections with like-minded individuals from around the world.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTF Section -->
+    <section class="py-16 glitch-bg relative" id="ctf">
+        <div class="container mx-auto px-4 z-10 relative">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Upcoming CTF Event</h2>
+                <div class="w-20 h-1 bg-purple-500 mx-auto"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-900 bg-opacity-50 backdrop-blur-md border border-cyan-500 p-10 rounded-xl w-full max-w-5xl mx-auto text-center shadow-lg">
+                    <div class="text-center">
+                        <h3 class="text-3xl font-bold mb-2 neon-text-purple" id="ctf-title">Root Access Protocol v1</h3>
+                        <div class="mb-6 flex justify-center items-center space-x-4">
+                            <span class="bg-purple-900 text-purple-200 px-3 py-1 rounded-full text-sm">Jeopardy-style</span>
+                            <span class="bg-purple-900 text-purple-200 px-3 py-1 rounded-full text-sm">Teams of 1-4</span>
+                            <span class="bg-purple-900 text-purple-200 px-3 py-1 rounded-full text-sm">$2,000 Prize Pool</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <div class="text-cyan-400 text-xl mb-2">
+                                    <i class="far fa-calendar-alt"></i> Date & Time
+                                </div>
+                                <p id="ctf-date" class="text-gray-300">May 15-17, 2025</p>
+                                <p id="ctf-time" class="text-gray-300">48 Hours (Starts at 18:00 UTC)</p>
+                            </div>
+                            
+                            <div>
+                                <div class="text-cyan-400 text-xl mb-2">
+                                    <i class="fas fa-trophy"></i> Prizes
+                                </div>
+                                <p class="text-gray-300">1st Place: $1,000</p>
+                                <p class="text-gray-300">2nd Place: $600</p>
+                                <p class="text-gray-300">3rd Place: $400</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h4 class="text-xl font-semibold mb-4 text-cyan-400">Countdown to Start</h4>
+                            <div class="flex justify-center space-x-4 text-center">
+                                <div>
+                                    <div id="days" class="text-4xl font-bold neon-text">00</div>
+                                    <div class="text-gray-400 text-sm">Days</div>
+                                </div>
+                                <div>
+                                    <div id="hours" class="text-4xl font-bold neon-text">00</div>
+                                    <div class="text-gray-400 text-sm">Hours</div>
+                                </div>
+                                <div>
+                                    <div id="minutes" class="text-4xl font-bold neon-text">00</div>
+                                    <div class="text-gray-400 text-sm">Minutes</div>
+                                </div>
+                                <div>
+                                    <div id="seconds" class="text-4xl font-bold neon-text">00</div>
+                                    <div class="text-gray-400 text-sm">Seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="btn-cyber inline-block px-8 py-3 rounded-md text-lg font-semibold">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="py-16 glitch-bg relative" id="community">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Become Part of <span class="neon-text">Zero</span><span class="neon-text-purple">Trace</span></h2>
+                <div class="w-20 h-1 bg-cyan-400 mx-auto"></div>
+            </div>
+    
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <p class="text-lg text-gray-300">
+                        Whether you're a CTF rookie or a seasoned exploit hunter, our community is your space to connect, learn, and level up. Share ideas, tackle challenges, and grow with fellow cybersecurity enthusiasts.
+                    </p>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-cyan-400">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Discord</h3>
+                        <p class="text-gray-400 mb-4">Join our buzzing Discord server for live discussions, updates, and hacking sessions.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Join Discord</a>
+                    </div>
+    
+                    <div class="card-cyber-alt p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-purple-400">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Telegram</h3>
+                        <p class="text-gray-400 mb-4">Get bite-sized tips, CTF alerts, and cybersecurity news straight to your phone.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Join Telegram</a>
+                    </div>
+    
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-purple-400">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">GitHub</h3>
+                        <p class="text-gray-400 mb-4">Dive into our open-source tools, CTF writeups, and community-powered projects.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Visit GitHub</a>
+                    </div>
+                </div>
+    
+                <div class="mt-16 text-center">
+                    <h3 class="text-2xl font-semibold mb-6">Why Join?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card-cyber p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-cyan-400">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Weekly Mini-Challenges</h4>
+                            <p class="text-gray-400">Test your skills weekly with bite-sized challenges covering real-world security problems.</p>
+                        </div>
+    
+                        <div class="card-cyber-alt p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-purple-400">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">1:1 Mentorship</h4>
+                            <p class="text-gray-400">Learn directly from seasoned pros through personalized mentorship and guidance.</p>
+                        </div>
+    
+                        <div class="card-cyber-alt p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-purple-400">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">The Knowledge Vault</h4>
+                            <p class="text-gray-400">Access a growing library of CTF resources, scripts, walkthroughs, and cheat sheets.</p>
+                        </div>
+    
+                        <div class="card-cyber p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-cyan-400">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Live Workshops</h4>
+                            <p class="text-gray-400">Tune in to expert-led sessions on hacking topics, tool demos, and deep dives.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- <section class="py-16 glitch-bg relative" id="community">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Join Our Community</h2>
+                <div class="w-20 h-1 bg-cyan-400 mx-auto"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <p class="text-lg text-gray-300">
+                        Connect with like-minded cybersecurity enthusiasts, share knowledge, and participate in CTF events. Our community offers mentorship, challenge discussions, and a supportive environment for learning.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-cyan-400">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Discord</h3>
+                        <p class="text-gray-400 mb-4">Join our Discord server for real-time discussions, announcements, and community events.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Join Discord</a>
+                    </div>
+                    
+                    <div class="card-cyber-alt p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-purple-400">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Telegram</h3>
+                        <p class="text-gray-400 mb-4">Follow our Telegram channel for CTF updates, tips, and cybersecurity news.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Join Telegram</a>
+                    </div>
+                    
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4 text-purple-400">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">GitHub</h3>
+                        <p class="text-gray-400 mb-4">Explore our GitHub repositories for CTF tools, writeups, and open-source projects.</p>
+                        <a href="#" class="btn-cyber-alt inline-block px-6 py-2 rounded-md">Visit GitHub</a>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center">
+                    <h3 class="text-2xl font-semibold mb-6">What to Expect</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card-cyber p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-cyan-400">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Weekly Practice Challenges</h4>
+                            <p class="text-gray-400">
+                                Sharpen your skills with our weekly mini-challenges covering different cybersecurity topics.
+                            </p>
+                        </div>
+                        
+                        <div class="card-cyber-alt p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-purple-400">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Mentorship Program</h4>
+                            <p class="text-gray-400">
+                                Connect with experienced members who can guide you in specific areas of cybersecurity.
+                            </p>
+                        </div>
+                        
+                        <div class="card-cyber-alt p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-purple-400">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Knowledge Base</h4>
+                            <p class="text-gray-400">
+                                Access our wiki of tools, techniques, and resources for CTF competitions.
+                            </p>
+                        </div>
+                        
+                        <div class="card-cyber p-6 rounded-lg">
+                            <div class="text-3xl mb-4 text-cyan-400">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Workshops & Webinars</h4>
+                            <p class="text-gray-400">
+                                Participate in regular learning sessions hosted by community experts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Team Section -->
+    <section class="py-16 glitch-bg relative" id="team">
+        <div class="container mx-auto px-4 z-10 relative">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Our Team</h2>
+                <div class="w-20 h-1 bg-purple-500 mx-auto"></div>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="mb-4 overflow-hidden rounded-full w-32 h-32 mx-auto border-2 border-cyan-400">
+                            <img src="/api/placeholder/128/128" alt="Team Member" class="w-full h-full object-cover" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Alice Encoder</h3>
+                        <p class="text-cyan-400 mb-3">Founder & Lead Organizer</p>
+                        <p class="text-gray-400 mb-4 text-sm">
+                            Passionate about web security and cryptography. Has participated in over 50 CTF competitions worldwide.
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-cyber-alt p-6 rounded-lg text-center">
+                        <div class="mb-4 overflow-hidden rounded-full w-32 h-32 mx-auto border-2 border-purple-400">
+                            <img src="/api/placeholder/128/128" alt="Team Member" class="w-full h-full object-cover" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Bob Reverser</h3>
+                        <p class="text-purple-400 mb-3">Challenge Developer</p>
+                        <p class="text-gray-400 mb-4 text-sm">
+                            Expert in reverse engineering and binary exploitation. Loves creating unique challenges for CTFs.
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                                            <!-- More Team Members -->
+                    <div class="card-cyber p-6 rounded-lg text-center">
+                        <div class="mb-4 overflow-hidden rounded-full w-32 h-32 mx-auto border-2 border-cyan-400">
+                            <img src="/api/placeholder/128/128" alt="Team Member" class="w-full h-full object-cover" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Charlie Crypto</h3>
+                        <p class="text-cyan-400 mb-3">Crypto Specialist</p>
+                        <p class="text-gray-400 mb-4 text-sm">
+                            Enjoys breaking classical and modern crypto schemes. Always thinking in XOR.
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-cyber-alt p-6 rounded-lg text-center">
+                        <div class="mb-4 overflow-hidden rounded-full w-32 h-32 mx-auto border-2 border-purple-400">
+                            <img src="/api/placeholder/128/128" alt="Team Member" class="w-full h-full object-cover" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Dana Debugger</h3>
+                        <p class="text-purple-400 mb-3">Infrastructure & DevOps</p>
+                        <p class="text-gray-400 mb-4 text-sm">
+                            Handles CTFd deployments, dockerized challenge hosting, and monitoring tools.
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<!-- Hall of Fame Section -->
+<section class="py-16 glitch-bg relative" id="hall-of-fame">
+    <div class="container mx-auto px-4 z-10 relative">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Hall of Fame</h2>
+            <div class="w-20 h-1 bg-cyan-400 mx-auto"></div>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto">
+                Celebrating the top minds who cracked the hardest challenges in our past CTFs. Here are the legends of ZeroTrace.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Team 1 -->
+            <div class="card-cyber p-6 rounded-lg text-center">
+                <h3 class="text-xl font-semibold mb-2 neon-text">0xDeadBeef</h3>
+                <p class="text-gray-400 mb-4 text-sm">Winners of “Protocol Breach 2024” — Full pwn and crypto domination.</p>
+            </div>
+
+            <!-- Team 2 -->
+            <div class="card-cyber-alt p-6 rounded-lg text-center">
+                <h3 class="text-xl font-semibold mb-2 neon-text-purple">Hack The Planet</h3>
+                <p class="text-gray-400 mb-4 text-sm">Top 3 in “ZeroTrace Alpha” — Web exploitation wizards.</p>
+            </div>
+
+            <!-- Team 3 -->
+            <div class="card-cyber p-6 rounded-lg text-center">
+                <h3 class="text-xl font-semibold mb-2 neon-text">SegFault</h3>
+                <p class="text-gray-400 mb-4 text-sm">Best Forensics/OSINT solving in “Echo Raid 2023.”</p>
+            </div>
+
+            <!-- Add more teams below if needed -->
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="#" class="btn-cyber inline-block px-6 py-2 rounded-md text-lg font-semibold">View Past Events</a>
+        </div>        
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-16 glitch-bg relative" id="contact">
+    <div class="container mx-auto px-4 z-10 relative">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Contact <span class="neon-text">Zero</span><span class="neon-text-purple">Trace</span></h2>
+            <div class="w-20 h-1 bg-cyan-400 mx-auto"></div>
+            <p class="text-gray-400 mt-4 max-w-xl mx-auto">
+                Have questions or want to get in touch? Fill out the form below or reach out via our social channels.
+            </p>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+            <form class="grid grid-cols-1 gap-6">
+                <input type="text" placeholder="Your Name" required
+                    class="p-3 rounded-md bg-gray-800 text-white border border-cyan-400 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                <input type="email" placeholder="Your Email" required
+                    class="p-3 rounded-md bg-gray-800 text-white border border-cyan-400 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                <textarea placeholder="Your Message" rows="5" required
+                    class="p-3 rounded-md bg-gray-800 text-white border border-cyan-400 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400"></textarea>
+                <button type="submit" class="btn-cyber px-6 py-3 rounded-md font-semibold w-full md:w-auto">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
